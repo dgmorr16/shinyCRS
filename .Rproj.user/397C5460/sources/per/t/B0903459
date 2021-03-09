@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1614013166129.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "2240447703",
+    "id" : "B0903459",
+    "lastKnownWriteTime" : 1614697661,
+    "last_content_update" : 1614697661040,
+    "path" : "C:/Users/dmorr/Dropbox (Heriot-Watt University Team)/RES_EGIS_Water_Resilient_Cities/RAEng - Climate-Resilient Slums/RAEng dashboard/shinyApp/ui.R",
+    "project_path" : "ui.R",
+    "properties" : {
+        "cursorPosition" : "229,36",
+        "scrollLine" : "212"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 2,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

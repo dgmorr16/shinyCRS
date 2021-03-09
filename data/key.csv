@@ -1,0 +1,46 @@
+area,theme,hazard
+allSlums,Profile,Overall
+allSlums,Profile,Heatstress
+allSlums,Profile,Waterscarcity
+allSlums,Infrastructure,Overall
+allSlums,Infrastructure,Flood
+allSlums,Infrastructure,Waterquality
+allSlums,Infrastructure,Waterscarcity
+allSlums,Urban system,Flood
+allSlums,Urban system,Heatstress
+allSlums,Urban system,Waterscarcity
+Ashraf,Profile,Heatstress
+Ashraf,Profile,Waterscarcity
+Ashraf,Education,Flood
+Ashraf,Education,Waterscarcity
+Ashraf,Employment,Overall
+Ashraf,Urban system,Flood
+Ashraf,Urban system,Heatstress
+Ashraf,Urban system,Waterscarcity
+Golden,Education,Flood
+Golden,Education,Waterscarcity
+Golden,Employment,Overall
+Golden,Profile,Heatstress
+Golden,Profile,Waterscarcity
+Golden,Urban system,Flood
+Golden,Urban system,Heatstress
+Golden,Urban system,Waterscarcity
+New,Education,Flood
+New,Education,Waterscarcity
+New,Employment,Overall
+New,Profile,Heatstress
+New,Profile,Waterscarcity
+New,Urban system,Flood
+New,Urban system,Heatstress
+New,Urban system,Waterscarcity
+Peer,Education,Flood
+Peer,Education,Waterscarcity
+Peer,Employment,Overall
+Peer,Profile,Heatstress
+Peer,Profile,Waterscarcity
+Peer,Urban system,Flood
+Peer,Urban system,Heatstress
+Peer,Urban system,Waterscarcity
+Shanti,Urban system,Flood
+Shanti,Urban system,Heatstress
+Shanti,Urban system,Waterscarcity

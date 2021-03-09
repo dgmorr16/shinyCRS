@@ -1,0 +1,12 @@
+name: RAEng
+title: RAEng
+username:
+account: waterresilientcities
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3621743
+bundleId: 4317718
+url: https://waterresilientcities.shinyapps.io/RAEng/
+when: 1615232892.78156
+asMultiple: FALSE
+asStatic: FALSE

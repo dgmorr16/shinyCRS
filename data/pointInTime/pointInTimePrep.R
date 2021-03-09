@@ -1,0 +1,142 @@
+# -------------------------------------------------------------------------
+# pointInTimePrep.R
+# David Morrison
+#
+# Created: 2021-02-09
+# Last revised: 2021-02-09
+# -------------------------------------------------------------------------
+
+rm(list = ls()); cat("\014")
+
+# devtools::install_github("avisserquinn/colR") # For colR functions
+pacman::p_load(tidyverse, pbapply, data.table, igraph, vegalite, colR)
+
+setwd(dirname(rstudioapi::getSourceEditorContext()$path))
+
+
+# Functions ---------------------------------------------------------------
+
+
+# Function to attach a date and time to outputs
+filenameTimestamp <- function(prefix, extension, sep = "_") {
+  
+  timestamp <- format(Sys.time(), "%Y%m%d-%H%M%S")
+  
+  paste0(prefix, sep, timestamp, extension)
+  
+}
+
+# Function for generating POT plot:
+myDotplot <- function(myData, myPlotTitle) {
+  ggplot(data = myData, aes(x = result, 
+                            y = fct_reorder(vName, baseline_result_bc, .desc = F),
+                            fill = result)) +
+    
+    #facet_col(facets = vars(indicators), scales = "free_y", space = "free") +
+    
+    geom_vline(xintercept = 0, linetype="dashed", 
+               color = "#B4BDC5", size=0.5) +
+    
+    geom_point(stat='identity', size = 9, shape = 21, stroke = 0) +
+    
+    geom_text(aes(x = result, label = ifelse(result > 0, paste0("+", round(result,0)), round(result,0)), colour = "red" ),
+              fontface = "bold", family = "Arial",
+              size = 4) +
+    
+    labs(title = myPlotTitle) +
+    
+    theme(text = element_text(colour = "#2E4053"),
+          plot.title = element_text(face = "bold", size = 14, colour = "#2E4053"),
+          axis.text.y = element_text(colour = "#2B3947", size = 11),
+          axis.text.x = element_blank(),
+          axis.title.y = element_blank(),
+          axis.ticks.x = element_blank(),
+          axis.title.x = element_blank(),
+          axis.text.y.left = element_text(colour = "#2B3947"),
+          strip.text = element_text(face = "bold", size = 12, colour = "#2B3947"),
+          strip.background = element_blank(),
+          panel.background = element_rect(fill = "white", colour = "transparent", size = 2),
+          #panel.grid.major.x = element_line(colour = "#B4BDC5", size = 2),
+          panel.grid.major.y = element_line(colour = "#1B2631", linetype = 2, size = 0.5),
+          panel.spacing = unit(0.25, "cm"),
+          legend.position = "none")
+} 
+
+
+# Load data ---------------------------------------------------------------
+
+dt <- readRDS("USAH_resultsCompared_Jaipur_allScenarios_20210208 (WVBC only).RDS")
+
+## Create key for resultType plotting names...
+metric_key <- data.frame(
+  resultLabel = c("Absolute", "Absolute change", "Percent change",
+                  "Node Rank (overall)", "Node Rank (by level)"),
+  resultType = c("scenario_result_bc", "scenario_result_bcChange", "scenario_result_pctChange", 
+                 "scenario_result_rankOverall", "scenario_result_rankByLevel")
+)
+
+
+# Prepare data for Shiny --------------------------------------------------
+
+dv <- 
+  dt %>%
+  arrange(scenario, level, vName) %>%
+  full_join(metric_key, by = "resultType") %>%
+  mutate(levelName = levelName, 
+         levelF = factor(level, ordered = TRUE),
+         #indicators = str_to_upper(indicators),
+         label = paste0(level, " - ", levelName),
+         label = fct_inorder(label),
+         hazard = str_to_title(gsub(".*?USAH_Jaipur_\\w+_(.*?)_2021.*", "\\1", scenario)),
+         area = gsub(".*?USAH_Jaipur_(.*?)_.*", "\\1", scenario)
+         ) %>%
+  rename(Result = result, Node = vName) %>%
+  select(-level, levelF, levelName, -outlierLabel, Node, baseline_result_bc, resultType, 
+         resultLabel, -scenario, -label, hazard, area)
+dv
+
+dv$levelName <- gsub('Values and priority measures','Outcomes', dv$levelName)
+dv$levelName <- gsub('Generalised functions','Tasks', dv$levelName)
+dv$hazard <- gsub('Flood', 'Flooding', dv$hazard)
+dv$hazard <- gsub('Heatstress', 'Heat stress', dv$hazard)
+dv$hazard <- gsub('Waterscarcity', 'Water scarcity', dv$hazard)
+dv$hazard <- gsub('waterquality', 'Water quality', dv$hazard)
+dv$area <- gsub('allSlums', 'All Slum Areas', dv$area)
+dv$area <- gsub('Ashraf', 'Ashraf Colony', dv$area)
+dv$area <- gsub('Golden', 'Golden Colony', dv$area)
+dv$area <- gsub('Shanti', 'Shanti Colony', dv$area)
+dv$area <- gsub('New', 'New Indra Vihar', dv$area)
+dv$area <- gsub('Peer', 'Peer Daulat Shah', dv$area)
+
+
+# Test plot ---------------------------------------------------------------
+## Subset data for plotting...
+dvFlood <-
+  dv %>%
+  filter(scenario == "USAH_Jaipur_allSlums_flood_20210208-052222",
+         levelName == "Values and priority measures",
+         resultType == "scenario_result_pctChange")
+
+# Set limits for fixed scale...
+dtLimits <- 
+  dv %>%
+  filter(
+    resultType == "scenario_result_bc", ## Specify resultType you want to compare (BC change or Pct change)
+    levelName == "Generalised functions"
+  )
+
+myLimit <- abs(dtLimits$result) %>% max %>% ceiling; myLimit # Limits on either end of the scale should be the same
+
+# Plot...
+ggplotPitFlood <- 
+  myDotplot(dvFlood, "GF \n Percent change" ) +
+  scale_x_continuous(limits = c(-myLimit, myLimit)) 
+
+
+# Save  -------------------------------------------------------------------
+
+dv %>% saveRDS(filenameTimestamp(
+  prefix = "Jaipur_plottingData", extension = ".RDS")) ## Specify filename
+
+
+  
